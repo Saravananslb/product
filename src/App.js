@@ -1,24 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { useEffect, useState, Suspense } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Context } from "./context/Context";
+import { category } from "./jsonData/category";
+import { productList } from "./jsonData/productList";
+import ProductDetails from "./pages/ProductDetails";
+import ProductList from "./pages/ProductList";
+import "./styles/bootstrap.min.css";
+import "./styles/common.css";
 
 function App() {
+  const [product, setProduct] = useState({
+    products: productList.productList,
+    category: category.categories,
+  });
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Context.Provider value={{state: product}}>
+      <Router>
+        <Routes>
+         
+          <Route
+            exact
+            path="/products"
+            element={
+              <Suspense fallback={<div className="loader"></div>}>
+                <ProductList />
+              </Suspense>
+            }
+          />
+          <Route
+            exact
+            path="/product/:productid/details"
+            element={
+              <Suspense fallback={<div className="loader"></div>}>
+                <ProductDetails />
+              </Suspense>
+            }
+          />
+        </Routes>
+      </Router>
+    </Context.Provider>
   );
 }
 
