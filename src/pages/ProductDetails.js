@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
 import { Context } from "../context/Context";
 import '../styles/productDetails.css';
 
@@ -8,10 +7,12 @@ function ProductDetails() {
     const [username, setUsername] = useState('User');
 
     const { state } = useContext(Context);
-    const { productid } = useParams();
+    const [productid, setProductId] = useState();
 
     useEffect(() => {
         setUsername(localStorage.getItem("username"));
+        let productid = window.location.pathname.split('/')[2];
+        setProductId(productid)
         state.products.map(product => {
             product.products.map(item => {
                 if (item.productId == productid) {
@@ -19,21 +20,10 @@ function ProductDetails() {
                 }
             })
         })
-        // setProductDetails(state.products);
                 
     }, []);
 
-    const addToCart = () => {
-        const productId = window.location.pathname.split('/')[2];
-        const data = {
-            productId,
-            userId: localStorage.getItem("userId"),
-            token: localStorage.getItem("token")
-        };
-
-        setProductDetails(state.products)
-           
-    }
+    
 
     const logoutFn = () => {
         localStorage.removeItem('username');
@@ -50,11 +40,11 @@ function ProductDetails() {
                     <div className="row">
                         <div className="header-wrapper d-flex justify-content-between">
                             <div className="logo d-inline-block">
-                                <Link className="text-decoration-none" to={"/products"}>Ecommerce</Link>
+                                <a href="/products" className="text-decoration-none">Ecommerce</a>
                             </div>
                             <div className="user-actions d-flex flex-row">
-                                <Link className="text-decoration-none" to={"/account"}>Account</Link>
-                                <Link className="text-decoration-none" to={"/cart"}>Cart</Link>
+                                <a href="/account" className="text-decoration-none">Account</a>
+                                <a href="/cart" className="text-decoration-none" >Cart</a>
                                 <div className="user-intro">Hi {username}</div>
                                 <div className="logout-btn" onClick={logoutFn}>Logout</div>
                             </div>
@@ -79,14 +69,13 @@ function ProductDetails() {
                             </div>
                             {
                                 productDetails && productDetails.addedToCart == 1 ? (
-                                    <Link
+                                    <a href="/cart"
                                         className="product-details-action btn btn-primary text-decoration-none"
-                                        to={"/cart"}
                                     >
                                         Go To Cart
-                                    </Link>
+                                    </a>
                                 ) : (
-                                    <div className="product-details-action btn btn-primary text-decoration-none" onClick={addToCart}>Add To Cart</div>
+                                    <div className="product-details-action btn btn-primary text-decoration-none" >Add To Cart</div>
                                 )
                             }
                             <div className="add-to-cart-error-msg text-danger"></div>
